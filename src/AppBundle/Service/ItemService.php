@@ -106,5 +106,4 @@ class ItemService extends Container
 
         return $serializer->serialize($data, 'json');
     }
-
 }
