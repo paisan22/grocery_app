@@ -63,4 +63,8 @@ class Mediator
         return $this->itemService->deleteItem($id);
     }
 
+    public function updateItem(Request $request) {
+        return $this->itemService->updateItem($request);
+    }
+
 }

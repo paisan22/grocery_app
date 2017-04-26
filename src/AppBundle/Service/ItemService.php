@@ -10,7 +10,7 @@ namespace AppBundle\Service;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use AppBundle\Entity\Item;
-use Symfony\Component\DependencyInjection\Container;
+use Doctrine\Common\Persistence\ObjectRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Serializer;
  * Class ItemService
  * @package AppBundle\Service
  */
-class ItemService extends Container
+class ItemService
 {
     /**
      * @var ObjectManager
@@ -93,6 +93,26 @@ class ItemService extends Container
         $this->entityManager->flush();
 
         return new JsonResponse(array('result' => 'item deleted'));
+    }
+
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function updateItem(Request $request) {
+
+        $data = json_decode($request->getContent());
+
+        $item = $this->entityManager->getRepository('AppBundle:Item')->find($data->id);
+        $item->setName($data->name);
+        $item->setAmount($data->amount);
+
+        $this->entityManager->persist($item);
+        $this->entityManager->flush();
+
+        return new JsonResponse(json_decode($this->serialize($item)));
+
     }
 
     /**

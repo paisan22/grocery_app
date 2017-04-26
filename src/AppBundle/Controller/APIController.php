@@ -26,7 +26,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class APIController extends Controller
 {
     /**
-     * @Route("/item", name="add_product")
+     * @Route("/item", name="add_item")
      * @Method("POST")
      */
     public function addItem(Request $request) {
@@ -57,6 +57,14 @@ class APIController extends Controller
      */
     public function deleteItem($id) {
         return $this->get('mediator')->deleteItem($id);
+    }
+
+    /**
+     * @Route("/item", name="update_item")
+     * @Method("PUT")
+     */
+    public function updateItem(Request $request) {
+        return $this->get('mediator')->updateItem($request);
     }
 
 }

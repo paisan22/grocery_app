@@ -2,12 +2,17 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        <title>Grocery App</title>
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('bootstrap/bootstrap.min.css') }}">
     </head>
     <body>
+
+    <div class="container-fluid">
         {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+    </div>
+
+
+    <script src="{{ asset('bootstrap/bootstrap.min.js') }}"></script>
     </body>
 </html>
