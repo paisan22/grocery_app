@@ -10,4 +10,12 @@ namespace AppBundle\Repository;
  */
 class ItemRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function search(string $search) {
+        $qb = $this->createQueryBuilder('i');
+
+        return $qb->where('i.name LIKE :search')
+            ->setParameter('search', '%'.$search.'%')
+            ->getQuery()->getResult();
+
+    }
 }

@@ -11,8 +11,8 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Item;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -42,6 +42,17 @@ class FrontEndController extends Controller
      */
     public function deleteItem(Request $request) {
         $jsonResponse = $this->get('mediator')->deleteItem(json_decode($request->id));
+    }
 
+    /**
+     * @Route("/search", name="search_action")
+     * @Method("GET")
+     */
+    public function getItems(Request $request) {
+        $searchField = $request->get('searchField');
+
+        $result = $this->get('mediator')->searchItem($searchField);
+
+        return new JsonResponse($result);
     }
 }

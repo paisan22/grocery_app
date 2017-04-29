@@ -126,4 +126,8 @@ class ItemService
 
         return $serializer->serialize($data, 'json');
     }
+
+    public function searchItem(string $search) {
+        return $this->serialize($this->entityManager->getRepository('AppBundle:Item')->search($search));
+    }
 }

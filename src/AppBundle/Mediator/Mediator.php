@@ -67,4 +67,8 @@ class Mediator
         return $this->itemService->updateItem($request);
     }
 
+    public function searchItem(string $search) {
+        return $this->itemService->searchItem($search);
+    }
+
 }
