@@ -11,18 +11,48 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
 
-            {% for item in items %}
+            <table id="dataTable" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
 
-                <div class="row">
-                    <div class="col-md-4">{{ item.name }}</div>
-                    <div class="col-md-4">{{ item.amount }}</div>
-                </div>
+                <tbody>
+                {% for item in items %}
+                    <tr class="item" data-id="{{ item.id }}">
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.amount }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
 
-            {% endfor %}
+            </table>
+
+        </div>
+        <div class="col-md-6">
 
         </div>
     </div>
 
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $( document ).ready(function () {
+            
+            $("#dataTable tbody").on("click", "tr", function () {
+                var itemId = $(this).data('id');
+
+                $(".item").removeClass("active");
+                $(this).addClass("active");
+
+                console.log(itemId);
+            })
+
+        })
+    </script>
 {% endblock %}

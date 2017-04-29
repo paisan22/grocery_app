@@ -11,6 +11,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Item;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -33,5 +34,14 @@ class FrontEndController extends Controller
         $allItems = $mediator->getAllItems();
 
         return array('items' => json_decode($allItems->getContent()));
+    }
+
+    /**
+     * @Route("/delete", name="delete_item")
+     * @Method("DELETE")
+     */
+    public function deleteItem(Request $request) {
+        $jsonResponse = $this->get('mediator')->deleteItem(json_decode($request->id));
+
     }
 }
