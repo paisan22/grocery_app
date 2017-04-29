@@ -11,7 +11,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="row">
                 <div class="col-md-12">
                     <input type="text" class="form-control" id="searchField" placeholder="Search...">
@@ -40,8 +40,24 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
+            <form id="add_form">
+                <div class="form-group">
+                    <input type="text" id="name" placeholder="Name..." class="form-control" value="testItem" />
+                </div>
 
+                <div class="form-group">
+                    <input type="number" id="amount" class="form-control" placeholder="Amount..." value="3" />
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">€</div>
+                        <input type="number" id="price" class="form-control" placeholder="Price..." />
+                    </div>
+                </div>
+            </form>
+            <button id="addItemBtn" class="btn btn-primary">Add item</button>
         </div>
     </div>
 
@@ -50,6 +66,36 @@
 {% block javascripts %}
     <script>
         $( document ).ready(function () {
+
+            $("#addItemBtn").on("click", function () {
+                var name = $("#name").val();
+                var amount = $("#amount").val();
+                var price = $("#price").val();
+
+                var item = new Object();
+                item.name = name;
+                item.amount = amount;
+                item.price = price;
+
+                $.post('{{ path('add_item') }}', { item: JSON.stringify(item) })
+                        .done(function (data) {
+                            console.log(data);
+
+                            $("#dataTable tbody").empty();
+
+                            jQuery.each($.parseJSON(data), function (i, item) {
+
+                                var tr = $('<tr class="item" data-id="' + item.id + '">' +
+                                        '<td>' + item.name + '</td>' +
+                                        '<td>' + item.amount + '</td>' +
+                                        '</tr>');
+
+                                $("#dataTable tbody").append(tr);
+
+                            })
+
+                        })
+            })
 
             $("#searchField").keyup (function () {
                 var searchField = $(this).val();

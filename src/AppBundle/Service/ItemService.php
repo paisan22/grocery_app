@@ -39,12 +39,10 @@ class ItemService
 
 
     /**
-     * @param Request $request
      * @return JsonResponse
      */
-    public function addItem(Request $request) {
+    public function addItem(\stdClass $jsonData) {
 
-        $jsonData = json_decode($request->getContent());
         $item = new Item();
         $item->setName($jsonData->name);
         $item->setAmount($jsonData->amount);
@@ -52,9 +50,7 @@ class ItemService
         $this->entityManager->persist($item);
         $this->entityManager->flush();
 
-        return new JsonResponse(array(
-            'result' => 'item added'
-        ));
+        return new JsonResponse(true);
     }
 
     /**
@@ -73,13 +69,12 @@ class ItemService
     }
 
     /**
-     * @return JsonResponse
      */
     public function getAllItems() {
         $repo = $this->entityManager->getRepository('AppBundle:Item');
         $items = $repo->findAll();
 
-        return new JsonResponse(json_decode($this->serialize($items)));
+        return $this->serialize($items);
     }
 
     /**
@@ -126,6 +121,7 @@ class ItemService
 
         return $serializer->serialize($data, 'json');
     }
+
 
     public function searchItem(string $search) {
         return $this->serialize($this->entityManager->getRepository('AppBundle:Item')->search($search));

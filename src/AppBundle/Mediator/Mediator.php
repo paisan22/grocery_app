@@ -10,6 +10,7 @@
 namespace AppBundle\Mediator;
 
 use AppBundle\Service\ItemService;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -32,12 +33,8 @@ class Mediator
         $this->itemService = $itemService;
     }
 
-    /**
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function addItem(Request $request) {
-        return $this->itemService->addItem($request);
+    public function addItem(\stdClass $data) {
+        return $this->itemService->addItem($data);
     }
 
     /**
@@ -49,7 +46,6 @@ class Mediator
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function getAllItems() {
         return $this->itemService->getAllItems();

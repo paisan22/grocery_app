@@ -33,7 +33,7 @@ class FrontEndController extends Controller
         $mediator = $this->get('mediator');
         $allItems = $mediator->getAllItems();
 
-        return array('items' => json_decode($allItems->getContent()));
+        return array('items' => json_decode($allItems));
     }
 
     /**
@@ -54,5 +54,19 @@ class FrontEndController extends Controller
         $result = $this->get('mediator')->searchItem($searchField);
 
         return new JsonResponse($result);
+    }
+
+    /**
+     * @Route("/add", name="add_item")
+     * @Method("POST")
+     */
+    public function addNewItem(Request $request) {
+
+        $data = json_decode($request->get('item'));
+
+        if ($this->get('mediator')->addItem($data)) {
+            return new JsonResponse($this->get('mediator')->getAllItems());
+        }
+        return null;
     }
 }

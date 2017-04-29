@@ -30,7 +30,7 @@ class APIController extends Controller
      * @Method("POST")
      */
     public function addItem(Request $request) {
-        return $this->get('mediator')->addItem($request);
+        return $this->get('mediator')->addItem(json_decode($request->getContent()));
     }
 
     /**
