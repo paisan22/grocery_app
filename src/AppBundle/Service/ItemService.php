@@ -103,6 +103,7 @@ class ItemService
         $item = $this->entityManager->getRepository('AppBundle:Item')->find($data->id);
         $item->setName($data->name);
         $item->setAmount($data->amount);
+        $item->setPrice($data->price);
 
         $this->entityManager->persist($item);
         $this->entityManager->flush();

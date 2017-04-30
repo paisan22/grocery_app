@@ -26,7 +26,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class APIController extends Controller
 {
     /**
-     * @Route("/item", name="add_item")
+     * @Route("/item", name="api_add_item")
      * @Method("POST")
      */
     public function addItem(Request $request) {
@@ -34,7 +34,7 @@ class APIController extends Controller
     }
 
     /**
-     * @Route("/item/{name}", name="get_item")
+     * @Route("/item/{name}", name="api_get_item")
      * @Method("GET")
      */
     public function getItemByName(string $name) {
@@ -44,15 +44,15 @@ class APIController extends Controller
     }
 
     /**
-     * @Route("/items", name="get_all_items")
+     * @Route("/items", name="api_get_all_items")
      * @Method("GET")
      */
     public function getAllItems() {
-        return $this->get('mediator')->getAllItems();
+        return new JsonResponse(json_decode($this->get('mediator')->getAllItems()));
     }
 
     /**
-     * @Route("/item/{id}", name="delete_item", requirements={"id": "\d+"})
+     * @Route("/item/{id}", name="api_delete_item", requirements={"id": "\d+"})
      * @Method("DELETE")
      */
     public function deleteItem($id) {
@@ -60,7 +60,7 @@ class APIController extends Controller
     }
 
     /**
-     * @Route("/item", name="update_item")
+     * @Route("/item", name="api_update_item")
      * @Method("PUT")
      */
     public function updateItem(Request $request) {
