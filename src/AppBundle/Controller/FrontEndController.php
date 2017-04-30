@@ -41,7 +41,9 @@ class FrontEndController extends Controller
      * @Method("DELETE")
      */
     public function deleteItem(Request $request) {
-        $jsonResponse = $this->get('mediator')->deleteItem(json_decode($request->id));
+        $itemId = $request->get('id');
+        $jsonResponse = $this->get('mediator')->deleteItem($itemId);
+        return new JsonResponse($this->get('mediator')->getAllItems());
     }
 
     /**

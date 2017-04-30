@@ -34,6 +34,11 @@
                                 <td>{{ item.name }}</td>
                                 <td>{{ item.amount }}</td>
                                 <td>{{ item.price }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-default delete">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -69,6 +74,44 @@
     <script>
         $( document ).ready(function () {
 
+            init();
+            addItem();
+
+            $("#dataTable tbody").on("click", "tr", function () {
+                var itemId = $(this).data('id');
+
+                $(".item").removeClass("active");
+                $(this).addClass("active");
+
+//                console.log(itemId);
+            })
+
+        })
+
+        function init() {
+            deleteItem();
+            searchItem();
+        }
+
+        function deleteItem() {
+            $("#dataTable .delete").on("click", function (event) {
+
+                var itemId = $(this).parent().parent().data("id");
+                console.log(itemId);
+
+                $.ajax({
+                    url: '{{ path('delete_item') }}',
+                    method: 'DELETE',
+                    data: { id: itemId }})
+                        .done(function (result) {
+                            console.log(result)
+                            refreshItems(result);
+                        })
+
+            });
+        }
+
+        function addItem() {
             $("#addItemBtn").on("click", function () {
                 var name = $("#name").val();
                 var amount = $("#amount").val();
@@ -82,24 +125,12 @@
                 $.post('{{ path('add_item') }}', { item: JSON.stringify(item) })
                         .done(function (data) {
                             console.log(data);
-
-                            $("#dataTable tbody").empty();
-
-                            jQuery.each($.parseJSON(data), function (i, item) {
-
-                                var tr = $('<tr class="item" data-id="' + item.id + '">' +
-                                        '<td>' + item.name + '</td>' +
-                                        '<td>' + item.amount + '</td>' +
-                                        '<td>' + item.price + '</td>' +
-                                        '</tr>');
-
-                                $("#dataTable tbody").append(tr);
-
-                            })
-
-                        })
+                            refreshItems(data);
+                        });
             })
+        }
 
+        function searchItem() {
             $("#searchField").keyup (function () {
                 var searchField = $(this).val();
 
@@ -118,19 +149,31 @@
 
                                 $("#dataTable tbody").append(tr);
 
-                            })
+                            });
                         })
             });
+        }
 
-            $("#dataTable tbody").on("click", "tr", function () {
-                var itemId = $(this).data('id');
+        function refreshItems(items) {
+            $("#dataTable tbody").empty();
 
-                $(".item").removeClass("active");
-                $(this).addClass("active");
+            jQuery.each($.parseJSON(items), function (i, item) {
 
-                console.log(itemId);
+                var tr = $('<tr class="item" data-id="' + item.id + '">' +
+                        '<td>' + item.name + '</td>' +
+                        '<td>' + item.amount + '</td>' +
+                        '<td>' + item.price + '</td>' +
+                        '<td>' +
+                        '<button type="button" class="btn btn-default delete">' +
+                        '<span class="glyphicon glyphicon-remove"></span>' +
+                        '</button>' +
+                        '</td>' +
+                        '</tr>');
+
+                $("#dataTable tbody").append(tr);
             })
+            init();
+        }
 
-        })
     </script>
 {% endblock %}
