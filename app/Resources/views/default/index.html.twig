@@ -76,6 +76,7 @@
 
             init();
             addItem();
+            searchItem();
 
             $("#dataTable tbody").on("click", "tr", function () {
                 var itemId = $(this).data('id');
@@ -87,11 +88,6 @@
             })
 
         })
-
-        function init() {
-            deleteItem();
-            searchItem();
-        }
 
         function deleteItem() {
             $("#dataTable .delete").on("click", function (event) {
@@ -139,17 +135,7 @@
 
                             $("#dataTable tbody").empty();
 
-                            jQuery.each($.parseJSON(data), function (i, item) {
-
-                                var tr = $('<tr class="item" data-id="' + item.id + '">' +
-                                        '<td>' + item.name + '</td>' +
-                                        '<td>' + item.amount + '</td>' +
-                                        '<td>' + item.price + '</td>' +
-                                        '</tr>');
-
-                                $("#dataTable tbody").append(tr);
-
-                            });
+                            refreshItems(data);
                         })
             });
         }
@@ -173,6 +159,10 @@
                 $("#dataTable tbody").append(tr);
             })
             init();
+        }
+
+        function init() {
+            deleteItem();
         }
 
     </script>
