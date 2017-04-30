@@ -46,6 +46,7 @@ class ItemService
         $item = new Item();
         $item->setName($jsonData->name);
         $item->setAmount($jsonData->amount);
+        $item->setPrice($jsonData->price);
 
         $this->entityManager->persist($item);
         $this->entityManager->flush();

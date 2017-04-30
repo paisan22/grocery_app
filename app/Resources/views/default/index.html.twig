@@ -24,6 +24,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Amount</th>
+                            <th>Price</th>
                         </tr>
                         </thead>
 
@@ -32,6 +33,7 @@
                             <tr class="item" data-id="{{ item.id }}">
                                 <td>{{ item.name }}</td>
                                 <td>{{ item.amount }}</td>
+                                <td>{{ item.price }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -53,7 +55,7 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">€</div>
-                        <input type="number" id="price" class="form-control" placeholder="Price..." />
+                        <input type="number" id="price" class="form-control" placeholder="Price..." value="1.5" />
                     </div>
                 </div>
             </form>
@@ -88,6 +90,7 @@
                                 var tr = $('<tr class="item" data-id="' + item.id + '">' +
                                         '<td>' + item.name + '</td>' +
                                         '<td>' + item.amount + '</td>' +
+                                        '<td>' + item.price + '</td>' +
                                         '</tr>');
 
                                 $("#dataTable tbody").append(tr);
@@ -110,6 +113,7 @@
                                 var tr = $('<tr class="item" data-id="' + item.id + '">' +
                                         '<td>' + item.name + '</td>' +
                                         '<td>' + item.amount + '</td>' +
+                                        '<td>' + item.price + '</td>' +
                                         '</tr>');
 
                                 $("#dataTable tbody").append(tr);

@@ -36,6 +36,13 @@ class Item
     private $amount;
 
     /**
+     * @var decimal
+     *
+     * @ORM\Column(name="price", type="decimal", precision=10, scale=2)
+     */
+    private $price;
+
+    /**
      * Get id
      *
      * @return int
@@ -93,5 +100,28 @@ class Item
         return $this->amount;
     }
 
-}
 
+    /**
+     * Set price
+     *
+     * @param string $price
+     *
+     * @return Item
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * Get price
+     *
+     * @return string
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+}
