@@ -35,7 +35,6 @@ class Item
      */
     private $amount;
 
-
     /**
      * Get id
      *
@@ -93,5 +92,6 @@ class Item
     {
         return $this->amount;
     }
+
 }
 
