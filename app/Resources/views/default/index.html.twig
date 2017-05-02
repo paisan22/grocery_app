@@ -4,68 +4,97 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="jumbotron">
+            <div class="page-header">
                 <h1>Grocery App</h1>
+                <small>Paisan Rietbroek</small>
             </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-8">
-            <div class="row">
-                <div class="col-md-12">
-                    <input type="text" class="form-control" id="searchField" placeholder="Search...">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <table id="dataTable" class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Amount</th>
-                            <th>Price</th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-                        {% for item in items %}
-                            <tr class="item" data-id="{{ item.id }}">
-                                <td>{{ item.name }}</td>
-                                <td>{{ item.amount }}</td>
-                                <td>{{ item.price }}</td>
-                                <td>
-                                    <button type="button" class="btn btn-default delete">
-                                        <span class="glyphicon glyphicon-remove"></span>
-                                    </button>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <form id="add_form">
-                <div class="form-group">
-                    <input type="text" id="name" placeholder="Name..." class="form-control" value="testItem" />
-                </div>
-
-                <div class="form-group">
-                    <input type="number" id="amount" class="form-control" placeholder="Amount..." value="3" />
-                </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-addon">€</div>
-                        <input type="number" id="price" class="form-control" placeholder="Price..." value="1.5" />
+        <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading"><b>Status</b></div>
+                    <div class="panel-body">
+                        <p id="totalPrice"></p>
+                        <p id="numberOfItems"></p>
+                        <p id="estimateTime"></p>
                     </div>
                 </div>
-            </form>
-            <button id="addItemBtn" class="btn btn-primary">Add item</button>
         </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Add item</div>
+                <div class="panel-body">
+                    <form id="add_form">
+                        <div class="form-group">
+                            <input type="text" id="name" placeholder="Name..." class="form-control" value="testItem" />
+                        </div>
+
+                        <div class="form-group">
+                            <input type="number" id="amount" class="form-control" placeholder="Amount..." value="3" />
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-addon">€</div>
+                                <input type="number" id="price" class="form-control" placeholder="Price..." value="1.5" />
+                            </div>
+                        </div>
+                    </form>
+                    <button id="addItemBtn" class="btn btn-success">Add item</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Overview items</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="searchField" placeholder="Search...">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <table id="dataTable" class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Amount</th>
+                                    <th>Price</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                {% for item in items %}
+                                    <tr class="item" data-id="{{ item.id }}">
+                                        <td>{{ item.name }}</td>
+                                        <td>{{ item.amount }}</td>
+                                        <td>{{ item.price }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-default delete">
+                                                <span class="glyphicon glyphicon-remove"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 {% endblock %}
@@ -77,17 +106,27 @@
             init();
             addItem();
             searchItem();
+            setStatus();
+
 
             $("#dataTable tbody").on("click", "tr", function () {
                 var itemId = $(this).data('id');
 
                 $(".item").removeClass("active");
                 $(this).addClass("active");
-
-//                console.log(itemId);
             })
 
-        })
+        });
+
+        function setStatus() {
+            $.get("{{ path('get_status') }}")
+                    .done(function (data) {
+                        $("#totalPrice").html("Total price: €" + data.price);
+                        $("#numberOfItems").html("Total items: " + data.number)
+                        $("#estimateTime").html("Estimate time: " + data.time + " minutes")
+                    })
+
+        }
 
         function deleteItem() {
             $("#dataTable .delete").on("click", function (event) {
@@ -163,6 +202,7 @@
 
         function init() {
             deleteItem();
+            setStatus();
         }
 
     </script>

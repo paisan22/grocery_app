@@ -128,4 +128,29 @@ class ItemService
     public function searchItem(string $search) {
         return $this->serialize($this->entityManager->getRepository('AppBundle:Item')->search($search));
     }
+
+    public function getTotalPriceItems() {
+        $items = $this->entityManager->getRepository("AppBundle:Item")->findAll();
+        $price = 0.00;
+        foreach ($items as $item) {
+            $price+= $item->getPrice() * $item->getAmount();
+        }
+        return $price;
+    }
+
+    public function getNumberOfItems() {
+        return count($this->entityManager->getRepository("AppBundle:Item")->findAll());
+    }
+
+    public function getEstimateShoppingTime() {
+        return $this->getNumberOfItems() * 1.5;
+    }
+
+    public function getStatus() {
+        return array(
+            'price' => $this->getTotalPriceItems(),
+            'number' => $this->getNumberOfItems(),
+            'time' => $this->getEstimateShoppingTime()
+        );
+    }
 }

@@ -67,4 +67,8 @@ class Mediator
         return $this->itemService->searchItem($search);
     }
 
+    public function getStatus() {
+        return $this->itemService->getStatus();
+    }
+
 }
