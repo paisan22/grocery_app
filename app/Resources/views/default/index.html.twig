@@ -8,6 +8,7 @@
                 <h1>Grocery App</h1>
                 <small>Paisan Rietbroek</small>
             </div>
+            <button type="button" id="logoutBtn" class="btn btn-danger">Logout</button>
         </div>
     </div>
 
@@ -107,6 +108,7 @@
             addItem();
             searchItem();
             setStatus();
+            logout();
 
 
             $("#dataTable tbody").on("click", "tr", function () {
@@ -198,6 +200,12 @@
                 $("#dataTable tbody").append(tr);
             })
             init();
+        }
+
+        function logout() {
+            $("#logoutBtn").on("click", function () {
+                window.location.replace('{{ path('logout') }}');
+            })
         }
 
         function init() {

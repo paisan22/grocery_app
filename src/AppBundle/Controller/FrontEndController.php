@@ -20,7 +20,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
+/**
+ * Class FrontEndController
+ * @package AppBundle\Controller
+ *
+ * @Security("has_role('ROLE_ADMIN')")
+ */
 class FrontEndController extends Controller
 {
 

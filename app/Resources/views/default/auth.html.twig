@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="jumbotron">
+
+                {% if error %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading">Something went wrong</div>
+                                <div class="panel-body">
+                                    <p> {{ error.message }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">Login</div>
+                            <div class="panel-body">
+                                <form action="{{ path('login') }}" method="post">
+                                    <div class="form-group">
+                                        <input id="username" name="_username" type="text" class="form-control" placeholder="Username..." value="{{ last_username }}" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input id="password" name="_password" type="password" class="form-control" placeholder="Password..." />
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Login</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -135,7 +135,7 @@ class ItemService
         foreach ($items as $item) {
             $price+= $item->getPrice() * $item->getAmount();
         }
-        return $price;
+        return round($price, 2);
     }
 
     public function getNumberOfItems() {
