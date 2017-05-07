@@ -9,7 +9,9 @@
 
 namespace AppBundle\Mediator;
 
+use AppBundle\Service\CategoryService;
 use AppBundle\Service\ItemService;
+use AppBundle\Service\SerializeService;
 use AppBundle\Service\UserService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,21 +22,26 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class Mediator
 {
-    /**
-     * @var ItemService
-     */
-    private $itemService;
 
+    private $itemService;
     private $userService;
+    private $categoryService;
+    private $serializeService;
 
     /**
      * Mediator constructor.
      * @param ItemService $itemService
      */
-    public function __construct(ItemService $itemService, UserService $userService)
+    public function __construct(
+        ItemService $itemService,
+        UserService $userService,
+        CategoryService $categoryService,
+        SerializeService $serializeService)
     {
         $this->itemService = $itemService;
         $this->userService = $userService;
+        $this->categoryService = $categoryService;
+        $this->serializeService = $serializeService;
     }
 
     public function addItem(\stdClass $data) {
@@ -77,5 +84,33 @@ class Mediator
 
     public function registerUser(Request $request) {
         return $this->userService->registerUser($request);
+    }
+
+    public function addCategory(Request $request) {
+        return $this->categoryService->addCategory($request);
+    }
+
+    public function getAllCategories() {
+        return $this->categoryService->getAllCategories();
+    }
+
+    public function serialize(array $data) {
+        return $this->serializeService->serialize($data);
+    }
+
+    public function getAllSerializedItems() {
+        return $this->serializeService->getAllSerializedItems();
+    }
+
+    public function getNumberOfCategories() {
+        return $this->categoryService->getNumberOfCategories();
+    }
+
+    public function getAllSerializedCategories() {
+        return $this->serializeService->getAllSerializedCategories();
+    }
+
+    public function getAllItemsByCategory(int $id) {
+        return $this->itemService->getAllItemsByCategory($id);
     }
 }

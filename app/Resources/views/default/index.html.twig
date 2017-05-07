@@ -29,26 +29,56 @@
     <div class="row">
 
         <div class="col-md-4">
-            <div class="panel panel-primary">
-                <div class="panel-heading">Add item</div>
-                <div class="panel-body">
-                    <form id="add_form">
-                        <div class="form-group">
-                            <input type="text" id="name" placeholder="Name..." class="form-control" value="testItem" />
-                        </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Add item</div>
+                        <div class="panel-body">
+                            <form id="add_item_form">
 
-                        <div class="form-group">
-                            <input type="number" id="amount" class="form-control" placeholder="Amount..." value="3" />
-                        </div>
+                                <div class="form-group">
+                                    <select id="select_category" class="form-control">
 
-                        <div class="form-group">
-                            <div class="input-group">
-                                <div class="input-group-addon">€</div>
-                                <input type="number" id="price" class="form-control" placeholder="Price..." value="1.5" />
-                            </div>
+                                        <option selected disabled>Select a category...</option>
+
+                                        {% for category in categories %}
+                                            <option>{{ category.name }}</option>
+                                        {% endfor %}
+
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" id="name" placeholder="Item name..." class="form-control" value="testItem" />
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="number" id="amount" class="form-control" placeholder="Amount..." value="3" />
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">€</div>
+                                        <input type="number" id="price" class="form-control" placeholder="Price..." value="1.5" />
+                                    </div>
+                                </div>
+                            </form>
+                            <button id="addItemBtn" class="btn btn-success">Add item</button>
                         </div>
-                    </form>
-                    <button id="addItemBtn" class="btn btn-success">Add item</button>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Add category</div>
+                        <div class="panel-body">
+                            <form id="add_category_form">
+                                <div class="form-group">
+                                    <input type="text" id="category_name_field" placeholder="Category name..." class="form-control" />
+                                </div>
+                            </form>
+                            <button id="addCategoryBtn" class="btn btn-success">Add category</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -59,7 +89,22 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <input type="text" class="form-control" id="searchField" placeholder="Search...">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="searchField" placeholder="Search...">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <select id="search_category" class="form-control">
+
+                                    <option selected data-id="0">All items</option>
+
+                                    {% for category in categories %}
+                                        <option data-id="{{ category.id }}">{{ category.name }}</option>
+                                    {% endfor %}
+
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -71,6 +116,7 @@
                                     <th>Name</th>
                                     <th>Amount</th>
                                     <th>Price</th>
+                                    <th>Category</th>
                                 </tr>
                                 </thead>
 
@@ -80,6 +126,7 @@
                                         <td>{{ item.name }}</td>
                                         <td>{{ item.amount }}</td>
                                         <td>{{ item.price }}</td>
+                                        <td>{{ item.category.name }}</td>
                                         <td>
                                             <button type="button" class="btn btn-default delete">
                                                 <span class="glyphicon glyphicon-remove"></span>
@@ -106,10 +153,11 @@
 
             init();
             addItem();
+            addCategory();
             searchItem();
-            setStatus();
             logout();
-
+            setStatus();
+            searchByCategory();
 
             $("#dataTable tbody").on("click", "tr", function () {
                 var itemId = $(this).data('id');
@@ -120,14 +168,29 @@
 
         });
 
+        function init() {
+            deleteItem();
+        }
+
+        function addCategory() {
+            $("#addCategoryBtn").on("click", function () {
+                var name = $("#category_name_field").val();
+
+                $.post('{{ path('add_category') }}', { name: name })
+                        .done(function (data) {
+                            refreshCategoriesAdd(data);
+                            refreshCategoriesSearch(data);
+                        });
+            });
+        }
+
         function setStatus() {
             $.get("{{ path('get_status') }}")
                     .done(function (data) {
                         $("#totalPrice").html("Total price: €" + data.price);
                         $("#numberOfItems").html("Total items: " + data.number)
                         $("#estimateTime").html("Estimate time: " + data.time + " minutes")
-                    })
-
+                    });
         }
 
         function deleteItem() {
@@ -141,10 +204,8 @@
                     method: 'DELETE',
                     data: { id: itemId }})
                         .done(function (result) {
-                            console.log(result)
                             refreshItems(result);
-                        })
-
+                        });
             });
         }
 
@@ -153,18 +214,20 @@
                 var name = $("#name").val();
                 var amount = $("#amount").val();
                 var price = $("#price").val();
+                var category = $("#select_category").val();
 
                 var item = new Object();
                 item.name = name;
                 item.amount = amount;
                 item.price = price;
+                item.category = category;
 
                 $.post('{{ path('add_item') }}', { item: JSON.stringify(item) })
                         .done(function (data) {
                             console.log(data);
                             refreshItems(data);
                         });
-            })
+            });
         }
 
         function searchItem() {
@@ -177,7 +240,7 @@
                             $("#dataTable tbody").empty();
 
                             refreshItems(data);
-                        })
+                        });
             });
         }
 
@@ -190,6 +253,7 @@
                         '<td>' + item.name + '</td>' +
                         '<td>' + item.amount + '</td>' +
                         '<td>' + item.price + '</td>' +
+                        '<td>' + item.category.name + '</td>' +
                         '<td>' +
                         '<button type="button" class="btn btn-default delete">' +
                         '<span class="glyphicon glyphicon-remove"></span>' +
@@ -198,20 +262,51 @@
                         '</tr>');
 
                 $("#dataTable tbody").append(tr);
-            })
+            });
             init();
+        }
+
+        function refreshCategoriesAdd(categories) {
+            $("#select_category").empty().append('<option selected disabled>Select a category...</option>');
+            setCategoryOptions($("#select_category"), categories);
+        }
+
+        function refreshCategoriesSearch(categories) {
+            $("#search_category").empty().append('<option selected data-id="0">All items</option>');
+            setCategoryOptions($("#search_category"), categories);
+        }
+
+        function setCategoryOptions(selectElement, categories) {
+            jQuery.each($.parseJSON(categories), function (c, category) {
+                var option = $('<option>' + category.name + '</option>')
+                selectElement.append(option);
+            });
         }
 
         function logout() {
             $("#logoutBtn").on("click", function () {
                 window.location.replace('{{ path('logout') }}');
-            })
+            });
         }
 
-        function init() {
-            deleteItem();
-            setStatus();
+        function searchByCategory() {
+            $('#search_category').on('change', function () {
+                var id = $("option:selected", this).data('id');
+
+                if (id < 1) {
+                    $.get('{{ path('get_all_items') }}')
+                            .done(function (data) {
+                                refreshItems(data)
+                            })
+                } else {
+                    $.get('{{ path('get_all_by_category') }}', { id: id })
+                            .done(function (data) {
+                                refreshItems(data)
+                            });
+                }
+            });
         }
+
 
     </script>
 {% endblock %}

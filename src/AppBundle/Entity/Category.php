@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -27,6 +28,25 @@ class Category
      * @ORM\Column(name="name", type="string", length=60)
      */
     private $name;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Item", mappedBy="category")
+     */
+    private $items;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="categories")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     */
+    private $user;
+
+    /**
+     * Category constructor.
+     */
+    public function __construct()
+    {
+        $this->items = new ArrayCollection();
+    }
 
 
     /**
@@ -62,5 +82,52 @@ class Category
     {
         return $this->name;
     }
-}
 
+    /**
+     * Add item
+     *
+     * @param \AppBundle\Entity\Item $item
+     *
+     * @return Category
+     */
+    public function addItem(\AppBundle\Entity\Item $item)
+    {
+        $this->items[] = $item;
+
+        return $this;
+    }
+
+    /**
+     * Remove item
+     *
+     * @param \AppBundle\Entity\Item $item
+     */
+    public function removeItem(\AppBundle\Entity\Item $item)
+    {
+        $this->items->removeElement($item);
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Category
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+}

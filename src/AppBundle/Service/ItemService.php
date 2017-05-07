@@ -11,6 +11,7 @@ namespace AppBundle\Service;
 use Doctrine\Common\Persistence\ObjectManager;
 use AppBundle\Entity\Item;
 use Doctrine\Common\Persistence\ObjectRepository;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -27,14 +28,16 @@ class ItemService
      * @var ObjectManager
      */
     private $entityManager;
+    private $container;
 
     /**
      * ItemService constructor.
      * @param ObjectManager $entityManager
      */
-    public function __construct(ObjectManager $entityManager)
+    public function __construct(ObjectManager $entityManager, Container $container)
     {
         $this->entityManager = $entityManager;
+        $this->container = $container;
     }
 
 
@@ -47,6 +50,16 @@ class ItemService
         $item->setName($jsonData->name);
         $item->setAmount($jsonData->amount);
         $item->setPrice($jsonData->price);
+
+        $category = $this->entityManager->getRepository('AppBundle:Category')->findOneBy(
+            array('name' => $jsonData->category)
+        );
+
+        $item->setCategory($category);
+
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $item->setUser($user);
+
 
         $this->entityManager->persist($item);
         $this->entityManager->flush();
@@ -63,7 +76,7 @@ class ItemService
         $item = $itemRepository->findOneByName($name);
 
         if ($item instanceof Item) {
-            return new JsonResponse(json_decode($this->serialize($item)));
+            return new JsonResponse($item);
         } else {
             return new JsonResponse(array('result' => 'item not exists'));
         }
@@ -75,7 +88,7 @@ class ItemService
         $repo = $this->entityManager->getRepository('AppBundle:Item');
         $items = $repo->findAll();
 
-        return $this->serialize($items);
+        return $items;
     }
 
     /**
@@ -88,7 +101,7 @@ class ItemService
         $this->entityManager->remove($item);
         $this->entityManager->flush();
 
-        return new JsonResponse(array('result' => 'item deleted'));
+        return new JsonResponse(true);
     }
 
 
@@ -108,25 +121,12 @@ class ItemService
         $this->entityManager->persist($item);
         $this->entityManager->flush();
 
-        return new JsonResponse(json_decode($this->serialize($item)));
+        return new JsonResponse($item);
 
     }
-
-    /**
-     * @param $data
-     * @return string|\Symfony\Component\Serializer\Encoder\scalar
-     */
-    public function serialize($data) {
-        $encoder = array(new JsonEncoder());
-        $normalizer = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizer, $encoder);
-
-        return $serializer->serialize($data, 'json');
-    }
-
 
     public function searchItem(string $search) {
-        return $this->serialize($this->entityManager->getRepository('AppBundle:Item')->search($search));
+        return $this->entityManager->getRepository('AppBundle:Item')->search($search);
     }
 
     public function getTotalPriceItems() {
@@ -152,5 +152,10 @@ class ItemService
             'number' => $this->getNumberOfItems(),
             'time' => $this->getEstimateShoppingTime()
         );
+    }
+
+    public function getAllItemsByCategory(int $id) {
+        $category = $this->entityManager->getRepository('AppBundle:Category')->find($id);
+        return $this->entityManager->getRepository('AppBundle:Item')->findBy(array('category' => $category));
     }
 }

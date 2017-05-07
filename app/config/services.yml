@@ -20,3 +20,11 @@ services:
         class: AppBundle\Service\UserService
         autowire: true
 
+    category_service:
+        class: AppBundle\Service\CategoryService
+        autowire: true
+
+    serialize_service:
+        class: AppBundle\Service\SerializeService
+        autowire: true
+

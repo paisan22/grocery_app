@@ -18,6 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -39,8 +40,12 @@ class FrontEndController extends Controller
     public function homePage() {
         $mediator = $this->get('mediator');
         $allItems = $mediator->getAllItems();
+        $categories = $mediator->getAllCategories();
 
-        return array('items' => json_decode($allItems));
+        return array(
+            'items' => $allItems,
+            'categories' => $categories
+        );
     }
 
     /**
@@ -48,21 +53,28 @@ class FrontEndController extends Controller
      * @Method("DELETE")
      */
     public function deleteItem(Request $request) {
+        $mediator = $this->get('mediator');
+
         $itemId = $request->get('id');
-        $jsonResponse = $this->get('mediator')->deleteItem($itemId);
-        return new JsonResponse($this->get('mediator')->getAllItems());
+        if (!$mediator->deleteItem($itemId)) {
+            return new JsonResponse("cannot get items");
+        }
+        return new JsonResponse($mediator->getAllSerializedItems());
     }
 
     /**
      * @Route("/search", name="search_action")
      * @Method("GET")
      */
-    public function getItems(Request $request) {
+    public function searchItems(Request $request) {
         $searchField = $request->get('searchField');
 
-        $result = $this->get('mediator')->searchItem($searchField);
+        $mediator = $this->get('mediator');
 
-        return new JsonResponse($result);
+        $result = $mediator->searchItem($searchField);
+
+
+        return new JsonResponse($mediator->serialize($result));
     }
 
     /**
@@ -71,10 +83,12 @@ class FrontEndController extends Controller
      */
     public function addNewItem(Request $request) {
 
+        $mediator = $this->get('mediator');
+
         $data = json_decode($request->get('item'));
 
-        if ($this->get('mediator')->addItem($data)) {
-            return new JsonResponse($this->get('mediator')->getAllItems());
+        if ($mediator->addItem($data)) {
+            return new JsonResponse($mediator->getAllSerializedItems());
         }
         return null;
     }
@@ -85,6 +99,45 @@ class FrontEndController extends Controller
      */
     public function getStatus() {
         return new JsonResponse($this->get('mediator')->getStatus());
+    }
+
+    /**
+     * @Route("/add_category", name="add_category")
+     * @Method("POST")
+     */
+    public function addCategory(Request $request) {
+        $mediator = $this->get('mediator');
+        if (!$mediator->addCategory($request)) {
+            return new JsonResponse("cannot get categories");
+        }
+        return new JsonResponse($mediator->getAllSerializedCategories());
+    }
+
+    /**
+     * @Route("/get_all_cat", name="get_all_cat")
+     */
+    public function getAllCat() {
+        return $this->get('mediator')->getAllCategories();
+    }
+
+    /**
+     * @Route("/get_all_by_category", name="get_all_by_category")
+     * @Method("GET")
+     */
+    public function getAllItemsByCategory(Request $request) {
+        $mediator = $this->get('mediator');
+        $id = $request->get('id');
+        $items = $mediator->getAllItemsByCategory($id);
+
+        return new JsonResponse($mediator->serialize($items));
+    }
+
+    /**
+     * @Route("/get_all_items", name="get_all_items")
+     * @Method("GET")
+     */
+    public function getAllItems() {
+        return new JsonResponse($this->get('mediator')->getAllSerializedItems());
     }
 
 }
