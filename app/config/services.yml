@@ -15,3 +15,8 @@ services:
     item_service:
         class: AppBundle\Service\ItemService
         autowire: true
+
+    user_service:
+        class: AppBundle\Service\UserService
+        autowire: true
+

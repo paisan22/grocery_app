@@ -10,6 +10,7 @@
 namespace AppBundle\Mediator;
 
 use AppBundle\Service\ItemService;
+use AppBundle\Service\UserService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -24,13 +25,16 @@ class Mediator
      */
     private $itemService;
 
+    private $userService;
+
     /**
      * Mediator constructor.
      * @param ItemService $itemService
      */
-    public function __construct(ItemService $itemService)
+    public function __construct(ItemService $itemService, UserService $userService)
     {
         $this->itemService = $itemService;
+        $this->userService = $userService;
     }
 
     public function addItem(\stdClass $data) {
@@ -71,4 +75,7 @@ class Mediator
         return $this->itemService->getStatus();
     }
 
+    public function registerUser(Request $request) {
+        return $this->userService->registerUser($request);
+    }
 }
