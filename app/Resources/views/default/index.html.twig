@@ -227,7 +227,7 @@
         }
 
         function deleteItem() {
-            $(".delete").on("click", function (event) {
+            $(".delete").on("click", function () {
 
                 var itemId = $(this).closest("tr").data("id");
 
@@ -235,9 +235,7 @@
                     url: '{{ path('delete_item') }}',
                     method: 'DELETE',
                     data: { id: itemId }})
-                        .done(function (result) {
-                            init(result);
-                        });
+                $(this).closest('tr').remove();
             });
         }
 
