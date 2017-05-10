@@ -2,32 +2,7 @@
 
 {% block body %}
 
-    <div class="row">
-
-        <div class="col-md-12">
-            <div class="page-header">
-                <div class="row">
-
-                    <div class="col-md-6">
-                        <h1>Grocery App</h1>
-                        <small>Paisan Rietbroek</small>
-                    </div>
-
-                    <div class="col-md-1 col-md-offset-5">
-                        <div class="row">
-                            <h4><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Hello {{ user }}</h4>
-                        </div>
-                        <div class="row">
-                            <button type="button" id="logoutBtn" class="btn btn-danger"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Logout</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-    </div>
-
+    {% include 'header.html.twig' %}
 
     <div class="row">
         <div class="col-md-4">
@@ -37,7 +12,11 @@
                         <div class="col-md-12">
                             <div class="panel panel-primary">
                                 <!-- Default panel contents -->
-                                <div class="panel-heading"><b><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Status</b></div>
+                                <div class="panel-heading">
+                                    <b>
+                                        <span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Status
+                                    </b>
+                                </div>
                                 <div class="panel-body">
                                     <p id="totalPrice"></p>
                                     <p id="numberOfItems"></p>
@@ -49,7 +28,9 @@
                 </div>
                 <div class="col-md-12">
                     <div class="panel panel-primary">
-                        <div class="panel-heading"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add item</div>
+                        <div class="panel-heading">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add item
+                        </div>
                         <div class="panel-body">
                             <form id="add_item_form">
 
@@ -84,25 +65,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add category</div>
-                        <div class="panel-body">
-                            <form id="add_category_form">
-                                <div class="form-group">
-                                    <input type="text" id="category_name_field" placeholder="Category name..." class="form-control" />
-                                </div>
-                            </form>
-                            <button id="addCategoryBtn" class="btn btn-success">Add category</button>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
         <div class="col-md-8">
             <div class="panel panel-primary">
-                <div class="panel-heading"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> Overview items</div>
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span> Overview items
+                </div>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12">
@@ -177,7 +147,6 @@
             deleteItem();
         });
 
-
         function setStatus() {
             $.get("{{ path('get_status') }}")
                     .done(function (data) {
@@ -231,19 +200,6 @@
             deleteItem();
         }
 
-        function addCategory() {
-            $("#addCategoryBtn").on("click", function () {
-                var name = $("#category_name_field").val();
-
-                $.post('{{ path('add_category') }}', { name: name })
-                        .done(function (data) {
-                            refreshCategoriesAdd(data);
-                            refreshCategoriesSearch(data);
-                        });
-                categoryAddedMessage();
-            });
-        }
-
         function deleteItem() {
             $(".delete").on("click", function () {
 
@@ -288,12 +244,6 @@
 
                             init(data)
                         });
-            });
-        }
-
-        function logout() {
-            $("#logoutBtn").on("click", function () {
-                window.location.replace('{{ path('logout') }}');
             });
         }
 

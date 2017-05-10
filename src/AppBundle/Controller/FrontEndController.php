@@ -51,6 +51,22 @@ class FrontEndController extends Controller
     }
 
     /**
+     * @Route("/category", name="category_page")
+     * @Method("GET")
+     * @Template("default/category.html.twig")
+     */
+    public function categoryPage() {
+        $mediator = $this->get('mediator');
+        $categories = $mediator->getAllCategories();
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+
+        return array(
+            'categories' => $categories,
+            'user' => $user->getUsername()
+        );
+    }
+
+    /**
      * @Route("/delete", name="delete_item")
      * @Method("DELETE")
      */
@@ -109,10 +125,7 @@ class FrontEndController extends Controller
      */
     public function addCategory(Request $request) {
         $mediator = $this->get('mediator');
-        if (!$mediator->addCategory($request)) {
-            return new JsonResponse("cannot get categories");
-        }
-        return new JsonResponse($mediator->getAllSerializedCategories());
+        return new JsonResponse($mediator->addCategory($request));
     }
 
     /**
@@ -142,4 +155,13 @@ class FrontEndController extends Controller
         return new JsonResponse($this->get('mediator')->getAllSerializedItems());
     }
 
+    /**
+     * @Route("/delete_category", name="delete_category")
+     * @Method("DELETE")
+     */
+    public function deleteCategory(Request $request) {
+        $catID = $request->get('id');
+
+        return new JsonResponse($this->get('mediator')->deleteCategory($catID));
+    }
 }

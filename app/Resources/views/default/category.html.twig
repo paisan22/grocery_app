@@ -1,31 +1,63 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    {% include 'header.html.twig' %}
 
     <div class="row">
 
-        <div class="col-md-12">
-            <div class="page-header">
-                <div class="row">
-
-                    <div class="col-md-6">
-                        <h1>Grocery App</h1>
-                        <small>Paisan Rietbroek</small>
-                    </div>
-
-                    <div class="col-md-1 col-md-offset-5">
-                        <div class="row">
-                            <h4><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Hello {{ user }}</h4>
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add category
+                </div>
+                <div class="panel-body">
+                    <form id="add_category_form">
+                        <div class="form-group">
+                            <input type="text" id="category_name_field" placeholder="Category name..." class="form-control" />
                         </div>
-                        <div class="row">
-                            <button type="button" id="logoutBtn" class="btn btn-danger"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Logout</button>
-                        </div>
-                    </div>
-
+                    </form>
+                    <button id="addCategoryBtn" class="btn btn-success">Add category</button>
                 </div>
             </div>
         </div>
 
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span> Overview categories
+                </div>
+
+                <table id="dataTable" class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for c in categories %}
+
+                        <tr class="category" data-id="{{ c.id }}">
+                            <td>{{ c.name }}</td>
+                            <td>
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-default delete">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </button>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
     </div>
 
 
@@ -36,8 +68,41 @@
 {% block javascripts %}
     <script>
         $( document ).ready(function () {
-
+            addCategoryListener();
+            deleteCategoryListener();
         });
+
+        function addCategoryListener() {
+            $("#addCategoryBtn").on("click", function () {
+                var name = $("#category_name_field").val();
+
+                $.post('{{ path('add_category') }}', { name: name })
+                        .done(function (catID) {
+
+                            var tr = $("<tr>").attr('data-id', catID);
+                            var td = $("<td>").html(name);
+
+                            tr.append(td);
+
+                            $("#dataTable tbody").append(tr);
+                        });
+            });
+        }
+
+        function deleteCategoryListener() {
+            $(".delete").on("click", function () {
+                var catID = $(this).closest('tr').data('id');
+
+                $.ajax({
+                    url: '{{ path('delete_category') }}',
+                    method: 'DELETE',
+                    data: { id: catID }
+                }).done(function (result) {
+                    console.log(result);
+                })
+                $(this).closest('tr').remove();
+            })
+        }
 
     </script>
 {% endblock %}

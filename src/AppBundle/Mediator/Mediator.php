@@ -117,4 +117,8 @@ class Mediator
     public function getAllItemsByCategory(int $id) {
         return $this->itemService->getAllItemsByCategory($id);
     }
+
+    public function deleteCategory(int $catID) {
+        return $this->categoryService->deleteCategory($catID);
+    }
 }

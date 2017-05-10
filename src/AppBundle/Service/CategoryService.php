@@ -11,6 +11,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Category;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,7 +45,7 @@ class CategoryService
         $this->entityManager->persist($category);
         $this->entityManager->flush();
 
-        return true;
+        return $category->getId();
     }
 
     public function getAllCategories() {
@@ -57,4 +58,15 @@ class CategoryService
         return count($this->getAllCategories());
     }
 
+    public function deleteCategory(int $catID) {
+        try {
+            $category = $this->entityManager->getRepository('AppBundle:Category')->find($catID);
+            $this->entityManager->remove($category);
+            $this->entityManager->flush();
+        } catch (Exception $exception) {
+            return $exception->getMessage();
+        }
+
+        return true;
+    }
 }
