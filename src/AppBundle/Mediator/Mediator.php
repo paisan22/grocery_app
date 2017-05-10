@@ -12,6 +12,7 @@ namespace AppBundle\Mediator;
 use AppBundle\Service\CategoryService;
 use AppBundle\Service\ItemService;
 use AppBundle\Service\SerializeService;
+use AppBundle\Service\StatusService;
 use AppBundle\Service\UserService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,6 +28,7 @@ class Mediator
     private $userService;
     private $categoryService;
     private $serializeService;
+    private $statusService;
 
     /**
      * Mediator constructor.
@@ -36,12 +38,14 @@ class Mediator
         ItemService $itemService,
         UserService $userService,
         CategoryService $categoryService,
-        SerializeService $serializeService)
+        SerializeService $serializeService,
+        StatusService $statusService)
     {
         $this->itemService = $itemService;
         $this->userService = $userService;
         $this->categoryService = $categoryService;
         $this->serializeService = $serializeService;
+        $this->statusService = $statusService;
     }
 
     public function addItem(\stdClass $data) {
@@ -79,7 +83,7 @@ class Mediator
     }
 
     public function getStatus() {
-        return $this->itemService->getStatus();
+        return $this->statusService->getStatus();
     }
 
     public function registerUser(Request $request) {

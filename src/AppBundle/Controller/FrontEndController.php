@@ -41,10 +41,12 @@ class FrontEndController extends Controller
         $mediator = $this->get('mediator');
         $allItems = $mediator->getAllItems();
         $categories = $mediator->getAllCategories();
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
 
         return array(
             'items' => $allItems,
-            'categories' => $categories
+            'categories' => $categories,
+            'user' => $user->getUsername()
         );
     }
 

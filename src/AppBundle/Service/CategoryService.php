@@ -48,7 +48,9 @@ class CategoryService
     }
 
     public function getAllCategories() {
-        return $this->entityManager->getRepository('AppBundle:Category')->findAll();
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+
+        return $this->entityManager->getRepository('AppBundle:Category')->findBy(array('user' => $user));
     }
 
     public function getNumberOfCategories() {

@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Repository;
+use AppBundle\Entity\User;
 
 /**
  * ItemRepository
@@ -10,11 +11,13 @@ namespace AppBundle\Repository;
  */
 class ItemRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function search(string $search) {
+    public function search(string $search, User $user) {
         $qb = $this->createQueryBuilder('i');
 
         return $qb->where('i.name LIKE :search')
+            ->andWhere('i.user = :user')
             ->setParameter('search', '%'.$search.'%')
+            ->setParameter('user', $user)
             ->getQuery()->getResult();
 
     }

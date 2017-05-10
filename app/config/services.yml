@@ -28,3 +28,8 @@ services:
         class: AppBundle\Service\SerializeService
         autowire: true
 
+    status_service:
+        class: AppBundle\Service\StatusService
+        autowire: true
+
+
