@@ -80,9 +80,18 @@
                         .done(function (catID) {
 
                             var tr = $("<tr>").attr('data-id', catID);
-                            var td = $("<td>").html(name);
+                            var tdName = $("<td>").html(name);
+                            var tdEdit = $('<td><span class="glyphicon glyphicon-edit"></span></td>');
 
-                            tr.append(td);
+                            var tdDelete = $('<td>');
+                            var button = $('<button>').addClass('btn btn-default delete').attr('type', 'button');
+                            var removeIcon = $('<span>').addClass('glyphicon glyphicon-remove');
+                            button.append(removeIcon);
+                            tdDelete.append(button);
+
+                            tr.append(tdName);
+                            tr.append(tdEdit);
+                            tr.append(tdDelete);
 
                             $("#dataTable tbody").append(tr);
                         });
