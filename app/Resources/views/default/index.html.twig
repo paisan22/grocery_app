@@ -122,7 +122,7 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-default delete">
+                                            <button type="button" class="btn btn-danger delete">
                                                 <span class="glyphicon glyphicon-remove"></span>
                                             </button>
                                         </td>
@@ -149,7 +149,7 @@
             addItem();
             searchItem();
             logout();
-            deleteItem();
+            deleteItemListener();
         });
 
         function setStatus() {
@@ -184,7 +184,7 @@
                 }
 
                 var tdDelete = $('<td>');
-                var deleteBtn = $('<button>').addClass('btn btn-default delete').attr('type', 'button');
+                var deleteBtn = $('<button>').addClass('btn btn-danger delete').attr('type', 'button');
                 var icon = $('<span>').addClass('glyphicon glyphicon-remove');
                 deleteBtn.append(icon);
                 tdDelete.append(deleteBtn);
@@ -203,20 +203,38 @@
         function init(result) {
             refreshItems(result);
             setStatus();
-            deleteItem();
+            deleteItemListener();
         }
 
-        function deleteItem() {
+        function deleteItemListener() {
             $(".delete").on("click", function () {
 
-                var itemId = $(this).closest("tr").data("id");
+                var itemID = $(this).closest("tr").data("id");
+                var row = $(this).closest('tr');
 
-                $.ajax({
-                    url: '{{ path('delete_item') }}',
-                    method: 'DELETE',
-                    data: { id: itemId }})
-                $(this).closest('tr').remove();
+                bootbox.confirm({
+                    size: "small",
+                    message: "Are you sure to delete?",
+                    callback: function (result) {
+                        if (result) {
+                            deleteItem(itemID, row);
+                        }
+                    }
+                })
+
             });
+        }
+
+        function deleteItem(itemID, row) {
+            $.ajax({
+                url: '{{ path('delete_item') }}',
+                method: 'DELETE',
+                data: { id: itemID }})
+                    .done(function (result) {
+                        if (result) {
+                            row.remove();
+                        }
+                    })
         }
 
         function addItem() {

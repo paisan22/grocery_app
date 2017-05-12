@@ -93,17 +93,14 @@
                                     .attr('value', name);
                             tdName.append(input);
 
-
-                            console.log('make edit')
                             var tdEdit = $('<td>');
-                            var editButton = $('<button>').addClass('btn btn-default editCat').attr('type', 'button');
+                            var editButton = $('<button>').addClass('btn btn-info editCat').attr('type', 'button');
                             var editIcon = $('<span>').addClass('glyphicon glyphicon-edit');
                             editButton.append(editIcon);
                             tdEdit.append(editButton);
 
-                            console.log('make delete')
                             var tdDelete = $('<td>');
-                            var deleteButton = $('<button>').addClass('btn btn-default delete').attr('type', 'button');
+                            var deleteButton = $('<button>').addClass('btn btn-danger delete').attr('type', 'button');
                             var removeIcon = $('<span>').addClass('glyphicon glyphicon-remove');
                             deleteButton.append(removeIcon);
                             tdDelete.append(deleteButton);
@@ -113,6 +110,7 @@
                             tr.append(tdDelete);
 
                             $("#dataTable tbody").append(tr);
+                            deleteCategoryListener();
                         });
             });
         }
@@ -120,16 +118,30 @@
         function deleteCategoryListener() {
             $(".delete").on("click", function () {
                 var catID = $(this).closest('tr').data('id');
+                var row = $(this).closest('tr');
 
-                $.ajax({
-                    url: '{{ path('delete_category') }}',
-                    method: 'DELETE',
-                    data: { id: catID }
-                }).done(function (result) {
-                    console.log(result);
+                bootbox.confirm({
+                    size: "small",
+                    message: "Are you sure to delete?",
+                    callback: function (result) {
+                        if (result) {
+                            deleteCategory(catID, row)
+                        }
+                    }
                 })
-                $(this).closest('tr').remove();
             })
+        }
+
+        function deleteCategory(catID, row) {
+            $.ajax({
+                url: '{{ path('delete_category') }}',
+                method: 'DELETE',
+                data: { id: catID }
+            }).done(function (result) {
+                if (result) {
+                    row.remove();
+                }
+            });
         }
 
         function updateCategoryListener() {
