@@ -40,12 +40,16 @@
                     {% for c in categories %}
 
                         <tr class="category" data-id="{{ c.id }}">
-                            <td>{{ c.name }}</td>
                             <td>
-                                <span class="glyphicon glyphicon-edit"></span>
+                                <input disabled class="form-control catName" type="text" value="{{ c.name }}" />
                             </td>
                             <td>
-                                <button type="button" class="btn btn-default delete">
+                                <button type="button" class="btn btn-info editCat">
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                </button>
+                            </td>
+                            <td>
+                                <button ddata-toggle="confirmation" data-popout="true" type="button" class="btn btn-danger delete">
                                     <span class="glyphicon glyphicon-remove"></span>
                                 </button>
                             </td>
@@ -70,6 +74,7 @@
         $( document ).ready(function () {
             addCategoryListener();
             deleteCategoryListener();
+            updateCategoryListener()
         });
 
         function addCategoryListener() {
@@ -80,14 +85,28 @@
                         .done(function (catID) {
 
                             var tr = $("<tr>").attr('data-id', catID);
-                            var tdName = $("<td>").html(name);
-                            var tdEdit = $('<td><span class="glyphicon glyphicon-edit"></span></td>');
 
+                            var tdName = $("<td>");
+                            var input = $('<input>').addClass('form-control catName')
+                                    .attr('disabled', true)
+                                    .attr('type', 'text')
+                                    .attr('value', name);
+                            tdName.append(input);
+
+
+                            console.log('make edit')
+                            var tdEdit = $('<td>');
+                            var editButton = $('<button>').addClass('btn btn-default editCat').attr('type', 'button');
+                            var editIcon = $('<span>').addClass('glyphicon glyphicon-edit');
+                            editButton.append(editIcon);
+                            tdEdit.append(editButton);
+
+                            console.log('make delete')
                             var tdDelete = $('<td>');
-                            var button = $('<button>').addClass('btn btn-default delete').attr('type', 'button');
+                            var deleteButton = $('<button>').addClass('btn btn-default delete').attr('type', 'button');
                             var removeIcon = $('<span>').addClass('glyphicon glyphicon-remove');
-                            button.append(removeIcon);
-                            tdDelete.append(button);
+                            deleteButton.append(removeIcon);
+                            tdDelete.append(deleteButton);
 
                             tr.append(tdName);
                             tr.append(tdEdit);
@@ -112,6 +131,33 @@
                 $(this).closest('tr').remove();
             })
         }
+
+        function updateCategoryListener() {
+            $(".editCat").on("click", function () {
+                toggleDisabled($(this).closest('tr').find('.catName'));
+            })
+        }
+
+        function toggleDisabled(input) {
+            if (input.attr('disabled')) {
+                input.attr('disabled', false)
+            } else {
+                var catID = input.closest('tr').data('id');
+                var newValue = input.val();
+                editCat(catID, newValue);
+
+                input.attr('disabled', true)
+            }
+        }
+
+        function editCat(catID, value) {
+            $.ajax({
+                url: '{{ path('edit_category') }}',
+                method: 'PUT',
+                data: { catID: catID, value: value }
+            });
+        }
+
 
     </script>
 {% endblock %}

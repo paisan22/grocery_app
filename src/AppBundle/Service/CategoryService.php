@@ -69,4 +69,11 @@ class CategoryService
 
         return true;
     }
+
+    public function editCategory(int $catID, string $value) {
+        $category = $this->entityManager->getRepository('AppBundle:Category')->find($catID);
+        $category->setName($value);
+        $this->entityManager->flush();
+        return true;
+    }
 }

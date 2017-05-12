@@ -164,4 +164,15 @@ class FrontEndController extends Controller
 
         return new JsonResponse($this->get('mediator')->deleteCategory($catID));
     }
+
+    /**
+     * @Route("/edit_category", name="edit_category")
+     * @Method("PUT")
+     */
+    public function editCategory(Request $request) {
+        $catID = $request->get('catID');
+        $value = $request->get('value');
+
+        return new JsonResponse($this->get('mediator')->editCategory($catID, $value));
+    }
 }

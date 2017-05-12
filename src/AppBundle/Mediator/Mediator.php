@@ -121,4 +121,8 @@ class Mediator
     public function deleteCategory(int $catID) {
         return $this->categoryService->deleteCategory($catID);
     }
+
+    public function editCategory(int $catID, string $value) {
+        return $this->categoryService->editCategory($catID, $value);
+    }
 }
