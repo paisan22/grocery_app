@@ -82,8 +82,8 @@ class Mediator
         return $this->itemService->searchItem($search);
     }
 
-    public function getStatus() {
-        return $this->statusService->getStatus();
+    public function getStatus(int $catID) {
+        return $this->statusService->getStatus($catID);
     }
 
     public function registerUser(Request $request) {

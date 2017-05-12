@@ -26,29 +26,41 @@ class StatusService
         $this->categoryService = $categoryService;
     }
 
-    public function getTotalPriceItems() {
-        $items = $this->itemService->getAllItems();
+    public function getTotalPriceItems(int $catID) {
+
+        $items = $this->getItems($catID);
+
         $price = 0.00;
         foreach ($items as $item) {
             $price += $item->getPrice() * $item->getAmount();
         }
+
         return round($price, 2);
     }
 
-    public function getNumberOfItems() {
-        return count($this->itemService->getAllItems());
+    public function getNumberOfItems(int $catID) {
+        return count($this->getItems($catID));
     }
 
-    public function getEstimateShoppingTime() {
-        return $this->getNumberOfItems() * 1.5;
+    public function getEstimateShoppingTime(int $catID) {
+        return $this->getNumberOfItems($catID) * 1.5;
     }
 
-    public function getStatus() {
+    public function getStatus(int $catID) {
         return array(
-            'price' => $this->getTotalPriceItems(),
-            'number' => $this->getNumberOfItems(),
-            'time' => $this->getEstimateShoppingTime()
+            'price' => $this->getTotalPriceItems($catID),
+            'number' => $this->getNumberOfItems($catID),
+            'time' => $this->getEstimateShoppingTime($catID)
         );
+    }
+
+    public function getItems(int $catID) {
+        if ($catID == 0 ) {
+            $items = $this->itemService->getAllItems();
+        } else {
+            $items = $this->itemService->getAllItemsByCategory($catID);
+        }
+        return $items;
     }
 
 }

@@ -115,8 +115,8 @@ class FrontEndController extends Controller
      * @Route("/get_status", name="get_status")
      * @Method("GET")
      */
-    public function getStatus() {
-        return new JsonResponse($this->get('mediator')->getStatus());
+    public function getStatus(Request $request) {
+        return new JsonResponse($this->get('mediator')->getStatus(intval($request->get('catID'))));
     }
 
     /**

@@ -141,14 +141,16 @@
             setStatus();
             searchByCategory();
             addItem();
-            addCategory();
             searchItem();
             logout();
             deleteItem();
         });
 
         function setStatus() {
-            $.get("{{ path('get_status') }}")
+
+            var id = $("#search_category option:selected").data('id');
+
+            $.get("{{ path('get_status') }}", { catID: id })
                     .done(function (data) {
                         $("#totalPrice").html("Total price: €" + data.price);
                         $("#numberOfItems").html("Total items: " + data.number)
@@ -174,23 +176,6 @@
                         '</tr>');
 
                 $("#dataTable tbody").append(tr);
-            });
-        }
-
-        function refreshCategoriesAdd(categories) {
-            $("#select_category").empty().append('<option selected disabled>Select a category...</option>');
-            setCategoryOptions($("#select_category"), categories);
-        }
-
-        function refreshCategoriesSearch(categories) {
-            $("#search_category").empty().append('<option selected data-id="0">All items</option>');
-            setCategoryOptions($("#search_category"), categories);
-        }
-
-        function setCategoryOptions(selectElement, categories) {
-            jQuery.each($.parseJSON(categories), function (c, category) {
-                var option = $('<option data-id=' + category.id + '>' + category.name + '</option>')
-                selectElement.append(option);
             });
         }
 
@@ -266,15 +251,11 @@
             });
         }
 
-        function categoryAddedMessage() {
-            var div = $('<div class="alert alert-success" role="alert">Category successfully added!</div>');
-            $('#addCategoryBtn').after(div);
-            setTimeout(function () {
-                $('.alert').remove();
-            }, 2000)
-
+        function logout() {
+            $("#logoutBtn").on("click", function () {
+                window.location.replace('{{ path('logout') }}');
+            });
         }
-
 
     </script>
 {% endblock %}
