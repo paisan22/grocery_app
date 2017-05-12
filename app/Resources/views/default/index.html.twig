@@ -114,7 +114,13 @@
                                         <td>{{ item.name }}</td>
                                         <td>{{ item.amount }}</td>
                                         <td>{{ item.price }}</td>
-                                        <td>{{ item.category.name }}</td>
+                                        <td>
+                                            {% if item.category.name is defined %}
+                                                {{ item.category.name }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
                                         <td>
                                             <button type="button" class="btn btn-default delete">
                                                 <span class="glyphicon glyphicon-remove"></span>
@@ -163,17 +169,32 @@
 
             jQuery.each($.parseJSON(items), function (i, item) {
 
-                var tr = $('<tr class="item" data-id="' + item.id + '">' +
-                        '<td>' + item.name + '</td>' +
-                        '<td>' + item.amount + '</td>' +
-                        '<td>' + item.price + '</td>' +
-                        '<td>' + item.category.name + '</td>' +
-                        '<td>' +
-                        '<button type="button" class="btn btn-default delete">' +
-                        '<span class="glyphicon glyphicon-remove"></span>' +
-                        '</button>' +
-                        '</td>' +
-                        '</tr>');
+                var tr = $('<tr>').addClass('item').attr('data-id', item.id);
+
+                var tdName = $('<td>').html(item.name);
+                var tdAmount = $('<td>').html(item.amount);
+                var tdPrice = $('<td>').html(item.price);
+
+                var tdCat = $('<td>');
+
+                try {
+                    tdCat.html(item.category.name);
+                } catch (err) {
+                    tdCat.html('-');
+                }
+
+                var tdDelete = $('<td>');
+                var deleteBtn = $('<button>').addClass('btn btn-default delete').attr('type', 'button');
+                var icon = $('<span>').addClass('glyphicon glyphicon-remove');
+                deleteBtn.append(icon);
+                tdDelete.append(deleteBtn);
+
+                tr.append(tdName);
+                tr.append(tdAmount);
+                tr.append(tdPrice);
+                tr.append(tdCat);
+                tr.append(tdDelete);
+
 
                 $("#dataTable tbody").append(tr);
             });
@@ -240,6 +261,7 @@
                 if (id < 1) {
                     $.get('{{ path('get_all_items') }}')
                             .done(function (data) {
+                                console.log(data)
                                 init(data)
                             })
                 } else {
