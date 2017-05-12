@@ -43,6 +43,13 @@ class Item
     private $price;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="is_checked", type="boolean")
+     */
+    private $isChecked;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="items")
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      */
@@ -184,4 +191,22 @@ class Item
     {
         return $this->user;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getIsChecked()
+    {
+        return $this->isChecked;
+    }
+
+    /**
+     * @param mixed $isChecked
+     */
+    public function setIsChecked($isChecked)
+    {
+        $this->isChecked = $isChecked;
+    }
+
+
 }

@@ -104,6 +104,7 @@
                                     <th>Amount</th>
                                     <th>Price</th>
                                     <th>Category</th>
+                                    <th>Check</th>
                                     <th>Delete</th>
                                 </tr>
                                 </thead>
@@ -121,6 +122,20 @@
                                                 -
                                             {% endif %}
                                         </td>
+
+                                        <td>
+                                            <input class="check-event" type="checkbox"
+                                                   data-toggle="toggle"
+                                                   data-on="+"
+                                                   data-off="-"
+                                                   data-onstyle="success"
+                                                   data-offstyle="warning"
+                                                   {% if item.isChecked %}
+                                                       checked
+                                                   {% endif %}
+                                            />
+                                        </td>
+
                                         <td>
                                             <button type="button" class="btn btn-danger delete">
                                                 <span class="glyphicon glyphicon-remove"></span>
@@ -150,6 +165,7 @@
             searchItem();
             logout();
             deleteItemListener();
+            checkboxListener();
         });
 
         function setStatus() {
@@ -204,6 +220,7 @@
             refreshItems(result);
             setStatus();
             deleteItemListener();
+            checkboxListener();
         }
 
         function deleteItemListener() {
@@ -289,6 +306,20 @@
                             });
                 }
             });
+        }
+        
+        function checkboxListener() {
+            $(".check-event").on("change", function () {
+                var itemID = $(this).closest('tr').data('id');
+                var checked = $(this).is(':checked');
+
+                $.ajax({
+                    url: '{{ path('change_check_status') }}',
+                    method: 'PUT',
+                    data: { itemID: itemID, isChecked: checked }
+                });
+
+            })
         }
 
         function logout() {

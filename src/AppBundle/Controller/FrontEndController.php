@@ -175,4 +175,15 @@ class FrontEndController extends Controller
 
         return new JsonResponse($this->get('mediator')->editCategory($catID, $value));
     }
+
+    /**
+     * @Route("/change_check_status", name="change_check_status")
+     * @Method("PUT")
+     */
+    public function changeCheckedStatus(Request $request) {
+        $itemID = $request->get('itemID');
+        $isChecked = $request->get('isChecked');
+
+        return new JsonResponse($this->get('mediator')->changeCheckedStatus($itemID, $isChecked));
+    }
 }

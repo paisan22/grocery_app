@@ -125,4 +125,8 @@ class Mediator
     public function editCategory(int $catID, string $value) {
         return $this->categoryService->editCategory($catID, $value);
     }
+
+    public function changeCheckedStatus(int $itemID, bool $checked) {
+        return $this->itemService->changeCheckedStatus($itemID, $checked);
+    }
 }

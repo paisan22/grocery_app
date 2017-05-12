@@ -136,4 +136,13 @@ class ItemService
         $category = $this->entityManager->getRepository('AppBundle:Category')->find($id);
         return $this->entityManager->getRepository('AppBundle:Item')->findBy(array('category' => $category));
     }
+
+    public function changeCheckedStatus(int $itemID, bool $checked) {
+        $item = $this->entityManager->getRepository('AppBundle:Item')->find($itemID);
+        $item->setIsChecked($checked);
+
+        $this->entityManager->flush();
+
+        return true;
+    }
 }
