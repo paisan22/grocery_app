@@ -129,4 +129,8 @@ class Mediator
     public function changeCheckedStatus(int $itemID, bool $checked) {
         return $this->itemService->changeCheckedStatus($itemID, $checked);
     }
+
+    public function getAllUsers() {
+        return $this->userService->getALlUsers();
+    }
 }

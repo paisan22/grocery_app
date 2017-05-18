@@ -48,4 +48,8 @@ class UserService
         return true;
     }
 
+    public function getALlUsers() {
+        return $this->entityManager->getRepository('AppBundle:User')->getUsersExceptAdmin();
+    }
+
 }

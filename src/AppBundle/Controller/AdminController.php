@@ -12,6 +12,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppBundle\Entity\User;
 
 /**
  * Class AdminController
@@ -20,13 +22,15 @@ use Symfony\Component\HttpFoundation\Response;
  * @Security("has_role('ROLE_ADMIN')")
  * @Route("/admin")
  */
-class AdminController
+class AdminController extends Controller
 {
     /**
      * @Route("/", name="admin_overview")
      * @Method("GET")
      */
     public function adminOverview() {
-        return new Response("Admin overview");
+        return $this->render(':admin:dashboard.html.twig', array(
+            'users' => $this->get('mediator')->getAllUsers()
+        ));
     }
 }
