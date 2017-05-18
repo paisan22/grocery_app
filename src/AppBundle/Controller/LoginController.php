@@ -24,14 +24,32 @@ class LoginController extends Controller
      * @Method("GET")
      */
     public function login() {
-
         return $this->render('login/login.html.twig', array('error' => false));
     }
 
     /**
-     * @Route("/login_failure", name = "login_action")
+     * @Route("/login_check", name="login_check")
      */
-    public function loginAction() {
+    public function loginCheck() {
+
+    }
+
+    /**
+     * @Route("/login_success", name="login_success")
+     */
+    public function loginSuccess () {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('admin_overview');
+        } else {
+            return $this->redirectToRoute('homepage');
+        }
+    }
+
+    /**
+     * @Route("/login_failure", name="login_failure")
+     */
+    public function loginFailure()
+    {
 
         $authenticationUtils = $this->get('security.authentication_utils');
 
@@ -39,17 +57,7 @@ class LoginController extends Controller
         $error = $authenticationUtils->getLastAuthenticationError();
 
         return $this->render('login/login.html.twig', array(
-            'error'         => $error,
+            'error' => $error,
         ));
     }
-
-
-    /**
-     * @Route("/logout", name="logout")
-     * @Method("GET")
-     */
-    public function logout() {
-        $this->render('login/login.html.twig');
-    }
-
 }

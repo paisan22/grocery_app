@@ -28,6 +28,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
  * @package AppBundle\Controller
  *
  * @Security("has_role('ROLE_USER')")
+ * @Route("/user")
  */
 class FrontEndController extends Controller
 {

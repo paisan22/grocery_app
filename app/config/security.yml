@@ -23,11 +23,11 @@ security:
             anonymous: ~
 
             form_login:
-                check_path: login_action
                 login_path: login
+                check_path: login_check
 
-                default_target_path: /
-                failure_path: login_action
+                default_target_path: login_success
+                failure_path: login_failure
 
                 # field names for the username and password fields
                 username_parameter: username
@@ -36,4 +36,6 @@ security:
                 provider: db_provider
 
             logout:
-                path: logout
+                path: /logout
+                target: /login
+
