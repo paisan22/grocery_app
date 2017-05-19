@@ -27,7 +27,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
 
     public function getUsersExceptAdmin() {
         return $this->createQueryBuilder('u')
-            ->where('u.username != :    admin')
+            ->where('u.username != :admin')
             ->setParameter('admin', 'admin')
             ->getQuery()
             ->getArrayResult();
