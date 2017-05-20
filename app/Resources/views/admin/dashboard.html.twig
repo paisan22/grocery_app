@@ -25,6 +25,7 @@
                     <th>ID</th>
                     <th>Username</th>
                     <th>E-mail</th>
+                    <th>Delete</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -33,7 +34,7 @@
                         <td>{{ user.id }}</td>
                         <td>{{ user.username }}</td>
                         <td>{{ user.email }}</td>
-                        <td></td>
+                        <td class="deleteUser" style="cursor: pointer"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -45,6 +46,20 @@
 
 {% block javascripts %}
     <script>
+        $(document).ready(function () {
 
+            $(".deleteUser").on("click", function () {
+                var userID = $(this).closest("tr").data("id");
+                $.ajax({
+                    url: '{{ path('delete_user') }}',
+                    data: { userID: userID },
+                    method: 'DELETE'
+                }).done(function (result) {
+                    console.log(result)
+                })
+
+                $(this).closest("tr").remove();
+            })
+        })
     </script>
 {% endblock %}

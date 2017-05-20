@@ -47,17 +47,17 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <input type="text" id="name" placeholder="Item name..." class="form-control" value="testItem" />
+                                    <input type="text" id="name" placeholder="Item name..." class="form-control" value="" />
                                 </div>
 
                                 <div class="form-group">
-                                    <input type="number" id="amount" class="form-control" placeholder="Amount..." value="3" />
+                                    <input type="number" id="amount" class="form-control" placeholder="Amount..." value="1" />
                                 </div>
 
                                 <div class="form-group">
                                     <div class="input-group">
                                         <div class="input-group-addon">€</div>
-                                        <input type="number" id="price" class="form-control" placeholder="Price..." value="1.5" />
+                                        <input type="number" id="price" class="form-control" placeholder="Price..." value="0.00" />
                                     </div>
                                 </div>
                             </form>
@@ -192,6 +192,18 @@
                 var tdPrice = $('<td>').html(item.price);
 
                 var tdCat = $('<td>');
+                var tdCheck = $('<td>');
+                var inputCheck = $('<input>').addClass('check-event')
+                                .attr('type', 'checkbox')
+                                .attr('data-toggle', 'toggle')
+                                .attr('data-on', '+')
+                                .attr('data-off', '-')
+                                .attr('data-onstyle', 'success')
+                                .attr('data-offstyle', 'warning');
+                if (item.isChecked) {
+                    inputCheck.addClass('checked');
+                }
+                tdCheck.append(inputCheck);
 
                 try {
                     tdCat.html(item.category.name);
@@ -209,6 +221,7 @@
                 tr.append(tdAmount);
                 tr.append(tdPrice);
                 tr.append(tdCat);
+                tr.append(tdCheck);
                 tr.append(tdDelete);
 
 

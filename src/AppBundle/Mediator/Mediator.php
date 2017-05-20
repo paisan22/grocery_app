@@ -133,4 +133,8 @@ class Mediator
     public function getAllUsers() {
         return $this->userService->getALlUsers();
     }
+
+    public function deleteUser(int $id) {
+        return $this->userService->deleteUser($id);
+    }
 }

@@ -2,9 +2,13 @@
 
 {% block body %}
 
+    <div class="page-header">
+        <h1>Admin</h1>
+        <small>Dashboard</small>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
-            <div class="jumbotron">
 
                 {% if error is defined %}
                     {% if error %}
@@ -50,7 +54,6 @@
                 </div>
             </div>
         </div>
-    </div>
 
 {% endblock %}
 

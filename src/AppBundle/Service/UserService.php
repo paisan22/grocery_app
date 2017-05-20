@@ -52,4 +52,11 @@ class UserService
         return $this->entityManager->getRepository('AppBundle:User')->getUsersExceptAdmin();
     }
 
+    public function deleteUser(int $id) {
+        $user = $this->entityManager->getRepository('AppBundle:User')->find($id);
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
+        return true;
+    }
+
 }

@@ -50,6 +50,7 @@ class ItemService
         $item->setName($jsonData->name);
         $item->setAmount($jsonData->amount);
         $item->setPrice($jsonData->price);
+        $item->setIsChecked(false);
 
         $category = $this->entityManager->getRepository('AppBundle:Category')->findOneBy(
             array('name' => $jsonData->category)

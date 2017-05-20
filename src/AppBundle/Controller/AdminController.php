@@ -11,6 +11,7 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -53,5 +54,14 @@ class AdminController extends Controller
         return $this->render('admin/dashboard.html.twig', array(
             'users' => $this->get('mediator')->getAllUsers()
         ));
+    }
+
+    /**
+     * @Route("/delete_user", name="delete_user")
+     * @Method("DELETE")
+     */
+    public function deleteUser(Request $request) {
+        $userID = $request->get('userID');
+        return new JsonResponse($this->get('mediator')->deleteUser(intval($userID)));
     }
 }
